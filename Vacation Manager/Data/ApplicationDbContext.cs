@@ -45,11 +45,10 @@ namespace Vacation_Manager.Data
                 .WithMany(p => p.Teams)
                 .HasForeignKey(t =>  t.ProjectId);
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Team)
-                .WithOne(t => t.TeamLeader)
-                .HasForeignKey(u => u.TeamId);
-
+            modelBuilder.Entity<Team>()
+                .HasOne(t => t.TeamLeader)
+                .WithOne(u => u.LedTeam)
+                .HasForeignKey<Team>(t => t.TeamLeaderId);
 
         }
     }
