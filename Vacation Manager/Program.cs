@@ -47,7 +47,7 @@ async Task CreateAdmin(WebApplication app)
 
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            var admin = new User { FirstName="FirstName",LastName="LastName",UserName = adminEmail, Email = adminEmail };
+            var admin = new User { FirstName = "FirstName", LastName = "LastName", UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             var result = await userManager.CreateAsync(admin, adminPassword);
             if (result.Succeeded)
             {

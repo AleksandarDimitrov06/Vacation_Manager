@@ -28,7 +28,7 @@ namespace Vacation_Manager.Data
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Name = "CEO", NormalizedName = "CEO" },
                 new IdentityRole { Name = "Developer", NormalizedName = "DEVELOPER" },
-                new IdentityRole { Name = "Team Lead", NormalizedName = "TEAMLEAD" },
+                new IdentityRole { Name = "Team Lead", NormalizedName = "TEAM LEAD" },
                 new IdentityRole { Name = "Unassigned", NormalizedName = "UNASSIGNED" }
             );
 

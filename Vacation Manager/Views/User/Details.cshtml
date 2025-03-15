@@ -1,0 +1,74 @@
+@model Vacation_Manager.Models.User
+
+@{
+    ViewData["Title"] = "Детайли за потребител";
+}
+
+<div class="container">
+    <h2 class="mb-4">Детайли за потребител</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Информация за потребителя</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Потребителско име:</h6>
+                        <p class="text-muted">@Model.UserName</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Име:</h6>
+                        <p class="text-muted">@Model.FirstName</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Фамилия:</h6>
+                        <p class="text-muted">@Model.LastName</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Email:</h6>
+                        <p class="text-muted">@Model.Email</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Роля:</h6>
+                        <p class="text-muted">
+                            @if (ViewBag.Roles != null && ViewBag.Roles.Count > 0)
+                            {
+                                @string.Join(", ", ViewBag.Roles)
+                            }
+                            else
+                            {
+                                <span>Няма зададена роля</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Екип:</h6>
+                        <p class="text-muted">
+                            @if (Model.Team != null)
+                            {
+                                @Model.Team.TeamName
+                            }
+                            else
+                            {
+                                <span>Няма зададен екип</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">Назад към списъка</a>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактиране</a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Изтриване</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

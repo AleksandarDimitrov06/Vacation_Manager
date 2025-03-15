@@ -220,10 +220,10 @@ namespace Vacation_Manager.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "06860686-9d6c-4bdf-8828-f5303f27c1c8", null, "Developer", "DEVELOPER" },
-                    { "1c7a7497-d651-4866-b38a-de5a577ba6ec", null, "CEO", "CEO" },
-                    { "bac30a00-340c-49e0-be35-5aa520f43655", null, "Team Lead", "TEAMLEAD" },
-                    { "bae092ae-d404-40c7-aca2-b70ec8519dbd", null, "Unassigned", "UNASSIGNED" }
+                    { "378639cf-8a65-4ee9-8a25-9a82f6d1f9e7", null, "Team Lead", "TEAM LEAD" },
+                    { "513e2744-1cb1-4e5e-8654-18375e797e17", null, "CEO", "CEO" },
+                    { "59bb53e4-bacd-4ac0-86e2-f2b0d194ed1d", null, "Unassigned", "UNASSIGNED" },
+                    { "eadfdb91-1678-4066-afe7-daa889833513", null, "Developer", "DEVELOPER" }
                 });
 
             migrationBuilder.CreateIndex(

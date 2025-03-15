@@ -1,0 +1,67 @@
+@model Vacation_Manager.Models.User
+
+@{
+    ViewData["Title"] = "Изтриване на потребител";
+}
+
+<div class="container">
+    <h2 class="mb-4">Изтриване на потребител</h2>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Внимание!</h4>
+        <p>Сигурни ли сте, че искате да изтриете този потребител? Това действие е необратимо.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Информация за потребителя</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Потребителско име:</h6>
+                        <p class="text-muted">@Model.UserName</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Име:</h6>
+                        <p class="text-muted">@Model.FirstName</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Фамилия:</h6>
+                        <p class="text-muted">@Model.LastName</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Email:</h6>
+                        <p class="text-muted">@Model.Email</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-bold">Роля:</h6>
+                        <p class="text-muted">
+                            @if (ViewBag.Roles != null && ViewBag.Roles.Count > 0)
+                            {
+                                @string.Join(", ", ViewBag.Roles)
+                            }
+                            else
+                            {
+                                <span>Няма зададена роля</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger">Потвърди изтриването</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

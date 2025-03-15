@@ -1,0 +1,164 @@
+@model List<(Vacation_Manager.Models.User User, List<string> Roles)>
+
+@{
+    ViewData["Title"] = "Потребители";
+}
+
+<div class="container">
+    <h2 class="mb-4">Управление на потребители</h2>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Списък с потребители</h5>
+            <a asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Създаване на потребител
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <form method="get" class="form-inline">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="searchString" value="@ViewBag.CurrentSearchString" placeholder="Търсене...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" name="roleFilter">
+                                    <option value="">Всички роли</option>
+                                    @foreach (var role in ViewBag.Roles)
+                                    {
+                                        if (role.Name == ViewBag.CurrentRoleFilter)
+                                        {
+                                            <option value="@role.Name" selected>@role.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@role.Name">@role.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" name="pageSize">
+                                    @foreach (var size in new[] { 10, 25, 50 })
+                                    {
+                                        if (size == ViewBag.PageSize)
+                                        {
+                                            <option value="@size" selected>@size записа</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@size">@size записа</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">Филтриране</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Потребителско име</th>
+                            <th>Име</th>
+                            <th>Фамилия</th>
+                            <th>Email</th>
+                            <th>Роля</th>
+                            <th>Екип</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.User.UserName</td>
+                                <td>@item.User.FirstName</td>
+                                <td>@item.User.LastName</td>
+                                <td>@item.User.Email</td>
+                                <td>@string.Join(", ", item.Roles)</td>
+                                <td>@(item.User.Team?.TeamName ?? "Няма екип")</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.User.Id" class="btn btn-info btn-sm" title="Детайли">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.User.Id" class="btn btn-warning btn-sm" title="Редактиране">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.User.Id" class="btn btn-danger btn-sm" title="Изтриване">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        Показване на @(((ViewBag.CurrentPage - 1) * ViewBag.PageSize) + 1) до @(Math.Min(ViewBag.TotalUsers, ViewBag.CurrentPage * ViewBag.PageSize)) от общо @ViewBag.TotalUsers записа
+                    </div>
+                    <nav>
+                        <ul class="pagination">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-pageSize="@ViewBag.PageSize" asp-route-searchString="@ViewBag.CurrentSearchString" asp-route-roleFilter="@ViewBag.CurrentRoleFilter">
+                                        &laquo;
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-pageSize="@ViewBag.PageSize" asp-route-searchString="@ViewBag.CurrentSearchString" asp-route-roleFilter="@ViewBag.CurrentRoleFilter">
+                                        &lt;
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@ViewBag.PageSize" asp-route-searchString="@ViewBag.CurrentSearchString" asp-route-roleFilter="@ViewBag.CurrentRoleFilter">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-pageSize="@ViewBag.PageSize" asp-route-searchString="@ViewBag.CurrentSearchString" asp-route-roleFilter="@ViewBag.CurrentRoleFilter">
+                                        &gt;
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages" asp-route-pageSize="@ViewBag.PageSize" asp-route-searchString="@ViewBag.CurrentSearchString" asp-route-roleFilter="@ViewBag.CurrentRoleFilter">
+                                        &raquo;
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Допълнителен JavaScript, ако е необходимо
+    </script>
+} 

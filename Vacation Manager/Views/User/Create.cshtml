@@ -1,0 +1,118 @@
+@model Vacation_Manager.Models.User
+
+@{
+    ViewData["Title"] = "Създаване на потребител";
+}
+
+<div class="container">
+    <h2 class="mb-4">Създаване на нов потребител</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Въведете информация за новия потребител</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label">Потребителско име</label>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Password" class="form-label">Парола</label>
+                            <input name="Password" id="Password" class="form-control" type="password" />
+                            <span id="PasswordValidation" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">Потвърди парола</label>
+                            <input name="ConfirmPassword" id="ConfirmPassword" class="form-control" type="password" />
+                            <span id="ConfirmPasswordValidation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label">Име</label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label">Фамилия</label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Роля</label>
+                            <select name="role" class="form-select">
+                                <option value="Unassigned">Unassigned</option>
+                                @foreach (var role in ViewBag.Roles)
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Екип</label>
+                            <select name="teamId" class="form-select">
+                                <option value="">-- Изберете екип --</option>
+                                @foreach (var team in ViewBag.Teams)
+                                {
+                                    <option value="@team.Value">@team.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-primary">Създаване</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                var password = $('#Password').val();
+                var confirmPassword = $('#ConfirmPassword').val();
+                var isValid = true;
+
+                // Проверка за празна парола
+                if (password === '') {
+                    $('#PasswordValidation').text('Паролата е задължителна');
+                    isValid = false;
+                } else if (password.length < 6) {
+                    $('#PasswordValidation').text('Паролата трябва да съдържа поне 6 символа');
+                    isValid = false;
+                } else {
+                    $('#PasswordValidation').text('');
+                }
+
+                // Проверка за съвпадение на паролите
+                if (password !== confirmPassword) {
+                    $('#ConfirmPasswordValidation').text('Паролите не съвпадат');
+                    isValid = false;
+                } else {
+                    $('#ConfirmPasswordValidation').text('');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+} 
