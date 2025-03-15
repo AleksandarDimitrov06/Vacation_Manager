@@ -1,0 +1,61 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+
+<div class="row">
+    <div class="col-lg-6 mx-auto rounded border p-3">
+        <h2 class="text-center mb-3">Регистрация в системата</h2>
+        <hr />
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="FirstName" />
+                <label asp-for="Input.FirstName">Собствено име</label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="LastName" />
+                <label asp-for="Input.LastName">Фамилия</label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email">Имейл</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">Парола</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.ConfirmPassword">Потвърди паролата</label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="row mb-3">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Регистрация</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" href="/" role="button">Отказ</a>
+                </div>
+            </div>
+            
+            
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

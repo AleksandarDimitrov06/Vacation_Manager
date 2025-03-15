@@ -10,17 +10,17 @@ namespace Vacation_Manager.Models
 
         [Required]
         [StringLength(50)]
-        public string TeamName { get; set; }
+        public required string TeamName { get; set; }
 
         public int ProjectId { get; set; }
 
         [ForeignKey("ProjectId")]
-        public virtual Project Project { get; set; }
+        public virtual Project? Project { get; set; }
 
-        public string TeamLeaderId { get; set; }
+        public string? TeamLeaderId { get; set; }
 
         [ForeignKey("TeamLeaderId")]
-        public virtual User TeamLeader { get; set; }
-        public virtual ICollection<User> Members { get; set; }
+        public virtual User? TeamLeader { get; set; }
+        public virtual ICollection<User>? Members { get; set; }
     }
 }

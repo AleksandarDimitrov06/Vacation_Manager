@@ -9,12 +9,12 @@ namespace Vacation_Manager.Models
 
         [Required]
         [StringLength(100)]
-        public string ProjectName { get; set; }
+        public required string ProjectName { get; set; }
 
         [Required]
         [StringLength(500)]
-        public string ProjectDescription { get; set; }
-        public virtual ICollection<Team> Teams { get; set; }
+        public required string ProjectDescription { get; set; }
+        public virtual ICollection<Team>? Teams { get; set; }
 
     }
 }

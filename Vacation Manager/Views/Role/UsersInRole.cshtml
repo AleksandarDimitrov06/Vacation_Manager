@@ -1,0 +1,66 @@
+@model IEnumerable<Vacation_Manager.Models.User>
+
+@{
+    ViewData["Title"] = $"Потребители в роля {ViewBag.RoleName}";
+}
+
+<div class="container">
+    <h2 class="mb-4">Потребители в роля "@ViewBag.RoleName"</h2>
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Потребители</h5>
+            <a asp-action="Index" class="btn btn-secondary">Назад към ролите</a>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <form method="get" class="row g-3">
+                    <input type="hidden" name="roleId" value="@ViewBag.RoleId" />
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" name="searchString" class="form-control" placeholder="Търсене по име, имейл..." />
+                            <button type="submit" class="btn btn-primary">Търси</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            @if (Model.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Потребителско име</th>
+                            <th>Име</th>
+                            <th>Фамилия</th>
+                            <th>Имейл</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    <a asp-action="ManageUserRoles" asp-route-userId="@user.Id" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-gear"></i> Управление на роли
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Няма потребители в тази роля.
+                </div>
+            }
+        </div>
+    </div>
+</div> 

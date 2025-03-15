@@ -1,0 +1,46 @@
+@model List<(Microsoft.AspNetCore.Identity.IdentityRole Role, int UserCount)>
+
+@{
+    ViewData["Title"] = "Роли";
+}
+
+<div class="container">
+    <h2 class="mb-4">Управление на роли</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Списък с роли</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Име на роля</th>
+                        <th>Брой потребители</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Role.Name</td>
+                            <td>@item.UserCount</td>
+                            <td>
+                                <a asp-action="UsersInRole" asp-route-roleId="@item.Role.Id" class="btn btn-info btn-sm">
+                                    <i class="bi bi-people"></i> Потребители
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Можете да добавите JavaScript тук, ако е необходимо
+    </script>
+} 

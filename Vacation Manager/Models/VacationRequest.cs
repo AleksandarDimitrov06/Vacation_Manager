@@ -29,20 +29,17 @@ namespace Vacation_Manager.Models
         public bool Approved { get; set; }
 
         [Required]
-        public string RequesterId { get; set; }
+        public required string RequesterId { get; set; }
 
         [ForeignKey("RequesterId")]
-        public virtual User Requester { get; set; }
+        public virtual required User Requester { get; set; }
 
         [Required]
         public RequestType RequestType { get; set; }
 
-        [StringLength(255)]
-        public string MedicalDocumentPath { get; set; }
-
-        public string ApproverId { get; set; }
+        public string? ApproverId { get; set; }
 
         [ForeignKey("ApproverId")]
-        public virtual User Approver { get; set; }
+        public virtual User? Approver { get; set; }
     }
 }
