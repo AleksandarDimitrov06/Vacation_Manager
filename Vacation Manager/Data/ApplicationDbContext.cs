@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Vacation_Manager.Models;
 
@@ -11,7 +12,8 @@ namespace Vacation_Manager.Data
             : base(options)
         {
         }
-        public DbSet<Role> Roles { get; set; }
+       
+        
         public DbSet<Team> Teams { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<VacationRequest> VacationRequests { get; set; }
@@ -20,21 +22,20 @@ namespace Vacation_Manager.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure relationships
+            
 
-            // 1. Users to Roles (Many-to-One)
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Role)
-                .WithMany(r => r.Users)
-                .HasForeignKey(u => u.RoleId);
 
-            // Seed the fixed roles
-            modelBuilder.Entity<Role>().HasData(
-                new Role { RoleId = 1, RoleName = "CEO" },
-                new Role { RoleId = 2, RoleName = "Developer" },
-                new Role { RoleId = 3, RoleName = "Team Lead" },
-                new Role { RoleId = 4, RoleName = "Unassigned" }
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Name = "CEO", NormalizedName = "CEO" },
+                new IdentityRole { Name = "Developer", NormalizedName = "DEVELOPER" },
+                new IdentityRole { Name = "Team Lead", NormalizedName = "TEAMLEAD" },
+                new IdentityRole { Name = "Unassigned", NormalizedName = "UNASSIGNED" }
             );
+
+
+
+
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Team)
                 .WithMany(r => r.Members)
@@ -49,6 +50,16 @@ namespace Vacation_Manager.Data
                 .HasOne(t => t.TeamLeader)
                 .WithOne(u => u.LedTeam)
                 .HasForeignKey<Team>(t => t.TeamLeaderId);
+
+            modelBuilder.Entity<VacationRequest>()
+                .HasOne(v => v.Requester)
+                .WithMany(u => u.RequestedVacations)
+                .HasForeignKey(v => v.RequesterId);
+
+            modelBuilder.Entity<VacationRequest>()
+                .HasOne(v => v.Approver)
+                .WithMany(u => u.ApprovedVacations)
+                .HasForeignKey(v => v.ApproverId);
 
         }
     }

@@ -10,25 +10,24 @@ namespace Vacation_Manager.Models
     {
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
 
         [Required]
-        public int RoleId { get; set; }
-
-        [ForeignKey("RoleId")]
-        public virtual Role Role { get; set; }
-
         public int? TeamId { get; set; }
 
         [ForeignKey("TeamId")]
+
+        [Required]
         public virtual Team Team { get; set; }
 
         public virtual ICollection<VacationRequest> RequestedVacations { get; set; }
         public virtual ICollection<VacationRequest> ApprovedVacations { get; set; }
-        public virtual Team LedTeam { get; set; }
+
+        public int? LedTeamId { get; set; } = null;
+        public virtual Team? LedTeam { get; set; } = null;
     }
 }
