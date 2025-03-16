@@ -14,7 +14,7 @@ namespace Vacation_Manager.Models
         [Required]
         [StringLength(500)]
         public required string ProjectDescription { get; set; }
-        public virtual ICollection<Team>? Teams { get; set; }
+        public virtual ICollection<Team>? Teams { get; set; } = new List<Team>();
 
     }
 }

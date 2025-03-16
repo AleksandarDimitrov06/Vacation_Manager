@@ -1,0 +1,55 @@
+@model IEnumerable<Vacation_Manager.Models.Project>
+
+@{
+    ViewData["Title"] = "Проекти";
+}
+
+<div class="container">
+    <h2 class="mb-4">Проекти</h2>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Списък с проекти</h5>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Нов проект
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Име на проекта</th>
+                            <th>Описание</th>
+                            <th>Брой екипи</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var project in Model)
+                        {
+                            <tr>
+                                <td>@project.ProjectName</td>
+                                <td>@(project.ProjectDescription.Length > 100 ? project.ProjectDescription.Substring(0, 97) + "..." : project.ProjectDescription)</td>
+                                <td>@(project.Teams?.Count ?? 0)</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@project.ProjectId" class="btn btn-info btn-sm">
+                                            <i class="bi bi-info-circle"></i> Детайли
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@project.ProjectId" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i> Редактиране
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@project.ProjectId" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Изтриване
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

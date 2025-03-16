@@ -1,0 +1,57 @@
+@model Vacation_Manager.Models.Project
+
+@{
+    ViewData["Title"] = "Изтриване на проект";
+}
+
+<div class="container">
+    <h2 class="mb-4">Изтриване на проект</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Потвърждение за изтриване</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4>Сигурни ли сте, че искате да изтриете този проект?</h4>
+                <p>Това действие не може да бъде отменено!</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Име на проекта</label>
+                        <p class="form-control-static">@Model.ProjectName</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Брой екипи</label>
+                        <p class="form-control-static">@(Model.Teams?.Count ?? 0)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Описание на проекта</label>
+                <p class="form-control-static">@Model.ProjectDescription</p>
+            </div>
+
+            @if (Model.Teams != null && Model.Teams.Any())
+            {
+                <div class="alert alert-warning">
+                    <h5>Внимание!</h5>
+                    <p>Този проект има @Model.Teams.Count асоцииран(и) екип(а). Не можете да изтриете проект, който има екипи.</p>
+                </div>
+            }
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="ProjectId" />
+                <div class="mt-3 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger" @(Model.Teams != null && Model.Teams.Any() ? "disabled" : "")>Изтриване</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
