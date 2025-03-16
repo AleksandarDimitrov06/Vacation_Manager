@@ -1,0 +1,58 @@
+@model Vacation_Manager.Models.Team
+
+@{
+    ViewData["Title"] = "Изтриване на екип";
+}
+
+<div class="container">
+    <h2 class="mb-4">Изтриване на екип</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Потвърждение за изтриване</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h4>Сигурни ли сте, че искате да изтриете този екип?</h4>
+                <p>Това действие не може да бъде отменено!</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Име на екипа</label>
+                        <p class="form-control-static">@Model.TeamName</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Проект</label>
+                        <p class="form-control-static">@(Model.Project?.ProjectName ?? "Няма назначен проект")</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Лидер на екипа</label>
+                        <p class="form-control-static">@(Model.TeamLeader?.UserName ?? "Няма назначен лидер")</p>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Members.Any())
+            {
+                <div class="alert alert-warning">
+                    <h5>Внимание!</h5>
+                    <p>Този екип има @Model.Members.Count члена. Изтриването на екипа ще премахне всички членове от него.</p>
+                </div>
+            }
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="TeamId" />
+                <div class="mt-3 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-danger">Изтриване</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

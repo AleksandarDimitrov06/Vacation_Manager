@@ -164,8 +164,8 @@ namespace Vacation_Manager.Migrations
                 {
                     TeamId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TeamName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    TeamName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: true),
                     TeamLeaderId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -180,8 +180,7 @@ namespace Vacation_Manager.Migrations
                         name: "FK_Teams_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
-                        principalColumn: "ProjectId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ProjectId");
                 });
 
             migrationBuilder.CreateTable(
@@ -220,10 +219,10 @@ namespace Vacation_Manager.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "378639cf-8a65-4ee9-8a25-9a82f6d1f9e7", null, "Team Lead", "TEAM LEAD" },
-                    { "513e2744-1cb1-4e5e-8654-18375e797e17", null, "CEO", "CEO" },
-                    { "59bb53e4-bacd-4ac0-86e2-f2b0d194ed1d", null, "Unassigned", "UNASSIGNED" },
-                    { "eadfdb91-1678-4066-afe7-daa889833513", null, "Developer", "DEVELOPER" }
+                    { "1de8bf05-ef14-48cc-86fa-23574e8cac02", null, "CEO", "CEO" },
+                    { "2d86ac89-3379-4457-81c8-ce7ef8837f57", null, "Unassigned", "UNASSIGNED" },
+                    { "4ff24582-e0ff-4b50-883e-e7a104b98ff8", null, "Developer", "DEVELOPER" },
+                    { "ae134a1d-51c4-402d-bb5c-271ba55d0c45", null, "Team Lead", "TEAM LEAD" }
                 });
 
             migrationBuilder.CreateIndex(

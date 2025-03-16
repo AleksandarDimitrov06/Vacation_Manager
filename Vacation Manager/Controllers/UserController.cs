@@ -79,6 +79,13 @@ namespace Vacation_Manager.Controllers
                 usersWithRoles.Add((user, roles.ToList()));
             }
 
+            // Сортиране на потребителите по роля, първо име и фамилия
+            usersWithRoles = usersWithRoles
+                .OrderBy(u => u.Roles.FirstOrDefault() ?? "Unassigned") // Сортиране по първа роля (или "Unassigned" ако няма роля)
+                .ThenBy(u => u.User.FirstName)
+                .ThenBy(u => u.User.LastName)
+                .ToList();
+
             return View(usersWithRoles);
         }
 
@@ -123,7 +130,7 @@ namespace Vacation_Manager.Controllers
 
             // Зареждане на всички екипи за падащото меню
             var teams = await _context.Teams.ToListAsync();
-            ViewBag.Teams = new SelectList(teams, "Id", "Name", user.TeamId);
+            ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName", user.TeamId);
 
             // Зареждане на текущата роля на потребителя
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -193,7 +200,7 @@ namespace Vacation_Manager.Controllers
 
             // Ако достигнем тук, означава че има грешка, презареждаме формата
             var teams = await _context.Teams.ToListAsync();
-            ViewBag.Teams = new SelectList(teams, "Id", "Name", teamId);
+            ViewBag.Teams = new SelectList(teams, "TeamId", "TeamName", teamId);
             ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name", role);
 
             return View(model);
@@ -248,78 +255,6 @@ namespace Vacation_Manager.Controllers
         private async Task<bool> UserExists(string id)
         {
             return await _userManager.FindByIdAsync(id) != null;
-        }
-
-        // GET: Създаване на нов потребител
-        public async Task<IActionResult> Create()
-        {
-            // Зареждане на всички екипи за падащото меню
-            var teams = await _context.Teams.ToListAsync();
-            ViewBag.Teams = new SelectList(teams, "Id", "Name");
-
-            // Зареждане на всички роли
-            ViewBag.Roles = await _roleManager.Roles.ToListAsync();
-
-            return View();
-        }
-
-        // POST: Създаване на нов потребител
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User model, string password, string confirmPassword, string? role, int? teamId)
-        {
-            if (ModelState.IsValid)
-            {
-                if (string.IsNullOrEmpty(password))
-                {
-                    ModelState.AddModelError("", "Паролата е задължителна");
-                }
-                else if (password != confirmPassword)
-                {
-                    ModelState.AddModelError("", "Паролите не съвпадат");
-                }
-                else
-                {
-                    
-                    var user = new User
-                    {
-                        UserName = model.UserName,
-                        Email = model.Email,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        TeamId = teamId
-                    };
-
-                    var result = await _userManager.CreateAsync(user, password);
-                    if (result.Succeeded)
-                    {
-                        
-                        if (!string.IsNullOrEmpty(role))
-                        {
-                            await _userManager.AddToRoleAsync(user, role);
-                        }
-                        else
-                        {
-                           
-                            await _userManager.AddToRoleAsync(user, "Unassigned");
-                        }
-
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                }
-            }
-
-            
-            var teams = await _context.Teams.ToListAsync();
-            ViewBag.Teams = new SelectList(teams, "Id", "Name", teamId);
-            ViewBag.Roles = await _roleManager.Roles.ToListAsync();
-
-            return View(model);
         }
     }
 } 

@@ -1,0 +1,63 @@
+@model Vacation_Manager.Models.Team
+
+@{
+    ViewData["Title"] = "Създаване на екип";
+}
+
+<div class="container">
+    <h2 class="mb-4">Създаване на нов екип</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Въведете информация за новия екип</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="TeamName" class="form-label">Име на екипа</label>
+                            <input asp-for="TeamName" class="form-control" />
+                            <span asp-validation-for="TeamName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Проект</label>
+                            <select asp-for="ProjectId" class="form-select">
+                                <option value="">-- Изберете проект --</option>
+                                @foreach (var item in ViewBag.Projects)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">Лидер на екипа</label>
+                            <select asp-for="TeamLeaderId" class="form-select">
+                                <option value="">-- Изберете лидер --</option>
+                                @foreach (var item in ViewBag.TeamLeads)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+                    <button type="submit" class="btn btn-primary">Създаване</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

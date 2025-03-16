@@ -1,0 +1,75 @@
+@using Microsoft.AspNetCore.Identity
+@model Vacation_Manager.Models.Team
+@inject UserManager<Vacation_Manager.Models.User> UserManager
+
+@{
+    ViewData["Title"] = "Детайли за екип";
+}
+
+<div class="container">
+    <h2 class="mb-4">Детайли за екип</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Информация за екипа</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <h5>Име на екипа</h5>
+                        <p class="form-control-static">@Model.TeamName</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <h5>Проект</h5>
+                        <p class="form-control-static">@(Model.Project?.ProjectName ?? "Няма назначен проект")</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <h5>Лидер на екипа</h5>
+                        <p class="form-control-static">@(Model.TeamLeader?.UserName ?? "Няма назначен лидер")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h5>Членове на екипа</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Потребителско име</th>
+                                <th>Име</th>
+                                <th>Фамилия</th>
+                                <th>Роля</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var member in Model.Members)
+                            {
+                                var roles = await UserManager.GetRolesAsync(member);
+                                var role = roles.FirstOrDefault() ?? "Няма роля";
+                                <tr>
+                                    <td>@member.UserName</td>
+                                    <td>@member.FirstName</td>
+                                    <td>@member.LastName</td>
+                                    <td>@role</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-3 d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">Назад</a>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.TeamId" class="btn btn-primary">Редактиране</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

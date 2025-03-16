@@ -16,18 +16,18 @@ namespace Vacation_Manager.Models
         [StringLength(50)]
         public required string LastName { get; set; }
 
-        
-        public int? TeamId { get; set; }
+
+        public int? TeamId { get; set; } = null;
 
         [ForeignKey("TeamId")]
 
        
-        public virtual Team? Team { get; set; }
+        public virtual Team? Team { get; set; } = null;
 
 
-        public int? LedTeamId { get; set; }
+        public int? LedTeamId { get; set; } = null;
         [ForeignKey("LedTeamId")]
-        public virtual Team? LedTeam { get; set; }
+        public virtual Team? LedTeam { get; set; } = null;
 
         public virtual ICollection<VacationRequest>? RequestedVacations { get; set; }
         public virtual ICollection<VacationRequest>? ApprovedVacations { get; set; }

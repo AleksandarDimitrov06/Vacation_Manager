@@ -1,0 +1,57 @@
+@model IEnumerable<Vacation_Manager.Models.Team>
+
+@{
+    ViewData["Title"] = "Екипи";
+}
+
+<div class="container">
+    <h2 class="mb-4">Управление на екипи</h2>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Списък с екипи</h5>
+            <a asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Създаване на екип
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Име на екипа</th>
+                            <th>Проект</th>
+                            <th>Лидер на екипа</th>
+                            <th>Брой членове</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var team in Model)
+                        {
+                            <tr>
+                                <td>@team.TeamName</td>
+                                <td>@(team.Project?.ProjectName ?? "Няма проект")</td>
+                                <td>@(team.TeamLeader?.UserName ?? "Няма лидер")</td>
+                                <td>@(team.Members?.Count ?? 0)</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@team.TeamId" class="btn btn-info btn-sm" title="Детайли">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@team.TeamId" class="btn btn-warning btn-sm" title="Редактиране">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@team.TeamId" class="btn btn-danger btn-sm" title="Изтриване">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

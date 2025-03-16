@@ -12,7 +12,7 @@ using Vacation_Manager.Data;
 namespace Vacation_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250315184352_Initial")]
+    [Migration("20250316121522_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -54,25 +54,25 @@ namespace Vacation_Manager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "513e2744-1cb1-4e5e-8654-18375e797e17",
+                            Id = "1de8bf05-ef14-48cc-86fa-23574e8cac02",
                             Name = "CEO",
                             NormalizedName = "CEO"
                         },
                         new
                         {
-                            Id = "eadfdb91-1678-4066-afe7-daa889833513",
+                            Id = "4ff24582-e0ff-4b50-883e-e7a104b98ff8",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "378639cf-8a65-4ee9-8a25-9a82f6d1f9e7",
+                            Id = "ae134a1d-51c4-402d-bb5c-271ba55d0c45",
                             Name = "Team Lead",
                             NormalizedName = "TEAM LEAD"
                         },
                         new
                         {
-                            Id = "59bb53e4-bacd-4ac0-86e2-f2b0d194ed1d",
+                            Id = "2d86ac89-3379-4457-81c8-ce7ef8837f57",
                             Name = "Unassigned",
                             NormalizedName = "UNASSIGNED"
                         });
@@ -219,7 +219,7 @@ namespace Vacation_Manager.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
 
-                    b.Property<int>("ProjectId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<string>("TeamLeaderId")
@@ -227,8 +227,8 @@ namespace Vacation_Manager.Migrations
 
                     b.Property<string>("TeamName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("TeamId");
 
@@ -421,9 +421,7 @@ namespace Vacation_Manager.Migrations
                 {
                     b.HasOne("Vacation_Manager.Models.Project", "Project")
                         .WithMany("Teams")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
                     b.HasOne("Vacation_Manager.Models.User", "TeamLeader")
                         .WithOne("LedTeam")
