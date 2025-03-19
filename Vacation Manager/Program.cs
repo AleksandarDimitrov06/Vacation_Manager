@@ -5,20 +5,30 @@ using Vacation_Manager.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+});
 
 builder.Services.AddRazorPages();
-
-
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -26,13 +36,11 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    
     app.UseHsts();
 }
 
-
-//първоначален админ (CEO), който да може да прави промени по текущите потребители
-//тъй като при регистрация на потребител автоматично му се задача роля "Unassigned" трябва да има поне един CEO, който да задава роли
+//РїСЉСЂРІРѕРЅР°С‡Р°Р»РµРЅ Р°РґРјРёРЅ (CEO), РєРѕР№С‚Рѕ РґР° РјРѕР¶Рµ РґР° РїСЂР°РІРё РїСЂРѕРјРµРЅРё РїРѕ С‚РµРєСѓС‰РёС‚Рµ РїРѕС‚СЂРµР±РёС‚РµР»Рё
+//С‚СЉР№ РєР°С‚Рѕ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёСЏ РЅР° РїРѕС‚СЂРµР±РёС‚РµР» Р°РІС‚РѕРјР°С‚РёС‡РЅРѕ РјСѓ СЃРµ Р·Р°РґР°РІР° СЂРѕР»СЏ "Unassigned" С‚СЂСЏР±РІР° РґР° РёРјР° РїРѕРЅРµ РµРґРёРЅ CEO, РєРѕР№С‚Рѕ РґР° Р·Р°РґР°РІР° СЂРѕР»Рё
 async Task CreateAdmin(WebApplication app)
 {
     using (var scope = app.Services.CreateScope())
@@ -70,6 +78,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
