@@ -2,7 +2,149 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    /* Hero Section Styles */
+    .home-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .hero-section {
+        text-align: center;
+        padding: 3rem 1rem;
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: #5d6778;
+        margin-bottom: 2rem;
+        font-weight: 300;
+    }
+
+    .cta-buttons {
+        margin-top: 2rem;
+    }
+
+    .cta-buttons .btn {
+        margin: 0 0.5rem;
+        padding: 0.75rem 2rem;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .cta-buttons .btn-primary {
+        background-color: #3498db;
+        border-color: #3498db;
+    }
+
+    .cta-buttons .btn-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+    }
+
+    /* Features Section */
+    .features-section {
+        margin: 4rem 0;
+    }
+
+    .feature-card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 2rem;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #3498db;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
+    .feature-card p {
+        color: #5d6778;
+        line-height: 1.6;
+    }
+
+    /* Info Section */
+    .info-section {
+        text-align: center;
+        margin-top: 3rem;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .info-section a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .info-section a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="home-container">
+    <div class="hero-section">
+        <h1 class="hero-title">Vacation Manager</h1>
+        <p class="hero-subtitle">Streamline your team's time-off requests and approvals</p>
+        <div class="cta-buttons">
+            <a href="/Vacations/Create" class="btn btn-primary btn-lg">Request Vacation</a>
+            <a href="/Vacations" class="btn btn-outline-secondary btn-lg">View Requests</a>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-calendar-check feature-icon"></i>
+                    <h3>Request Management</h3>
+                    <p>Easily submit and track vacation requests with our intuitive interface</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-people feature-icon"></i>
+                    <h3>Team Overview</h3>
+                    <p>Get a clear picture of your team's availability at any time</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="bi bi-graph-up feature-icon"></i>
+                    <h3>Vacation Analytics</h3>
+                    <p>Track usage patterns and plan resources effectively</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
