@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vacation Manager", "Vacation Manager\Vacation Manager.csproj", "{15D7485B-849D-4FCB-8830-EDEFE49A1B2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{A07EE92D-C9E0-4A6D-AEF4-2147A3117E91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{15D7485B-849D-4FCB-8830-EDEFE49A1B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15D7485B-849D-4FCB-8830-EDEFE49A1B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15D7485B-849D-4FCB-8830-EDEFE49A1B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A07EE92D-C9E0-4A6D-AEF4-2147A3117E91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A07EE92D-C9E0-4A6D-AEF4-2147A3117E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A07EE92D-C9E0-4A6D-AEF4-2147A3117E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A07EE92D-C9E0-4A6D-AEF4-2147A3117E91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
