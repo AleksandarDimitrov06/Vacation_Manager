@@ -51,25 +51,25 @@ namespace Vacation_Manager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3682947e-8faa-43ee-a471-0221991d5e25",
+                            Id = "fde1ec55-9696-4cd4-95b4-c71f9c20d5ee",
                             Name = "CEO",
                             NormalizedName = "CEO"
                         },
                         new
                         {
-                            Id = "59ec85a0-29c6-424a-a66c-932dc8b3d505",
+                            Id = "a4e9f1fe-5f4d-4fd7-90ed-f0b82b7951fd",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "ac752969-22f5-438c-92d5-67fa02687b78",
+                            Id = "1e9f29c9-f4e9-4c28-810d-8815674aaa81",
                             Name = "Team Lead",
                             NormalizedName = "TEAM LEAD"
                         },
                         new
                         {
-                            Id = "c9668154-c9a9-4936-8074-4f45592ea0a6",
+                            Id = "6854758c-c70d-404f-ae5d-bd656f29b555",
                             Name = "Unassigned",
                             NormalizedName = "UNASSIGNED"
                         });

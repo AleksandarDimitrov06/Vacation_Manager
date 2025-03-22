@@ -76,66 +76,81 @@ public class VacationRequestController : Controller
     // POST: VacationRequest/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(VacationRequest vacationRequest, IFormFile sickNote)
+    public async Task<IActionResult> Create(VacationRequest vacationRequest, IFormFile? sickNote)
     {
         Console.WriteLine("Model state valid: " + ModelState.IsValid);
         foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
         {
             Console.WriteLine("Error: " + error.ErrorMessage);
         }
-        if (ModelState.IsValid)
-        {
+
             var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            
+            ModelState.ClearValidationState("RequesterId");
+            ModelState.ClearValidationState("Requester");
             vacationRequest.RequesterId = currentUser.Id;
-            vacationRequest.CreationDate = DateTime.Now;
-            vacationRequest.Approved = false;
 
-            // За болничен отпуск
-            if (vacationRequest.RequestType == RequestType.Sick && sickNote != null)
+        if (vacationRequest.RequestType != RequestType.Sick)
             {
-                string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "sickNotes");
-                if (!Directory.Exists(uploadsFolder))
+                ModelState.Remove("sickNote");
+            }
+
+            if (TryValidateModel(vacationRequest))
+            {
+                vacationRequest.CreationDate = DateTime.Now;
+                vacationRequest.Approved = false;
+                // За болничен отпуск
+                if (vacationRequest.RequestType == RequestType.Sick && sickNote != null)
                 {
-                    Directory.CreateDirectory(uploadsFolder);
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "sickNotes");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = $"{Guid.NewGuid()}_{sickNote.FileName}";
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await sickNote.CopyToAsync(fileStream);
+                    }
+
+                    vacationRequest.AttachmentFilePath = uniqueFileName;
                 }
 
-                string uniqueFileName = $"{Guid.NewGuid()}_{sickNote.FileName}";
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                // без опция за половин ден при болничен отпуск
+                if (vacationRequest.RequestType == RequestType.Sick)
                 {
-                    await sickNote.CopyToAsync(fileStream);
+                    vacationRequest.HalfDay = false;
                 }
 
-                vacationRequest.AttachmentFilePath = uniqueFileName;
+                try
+                {
+                    _context.Add(vacationRequest);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error saving to database: " + ex.Message);
+                    ModelState.AddModelError("", "Failed to save: " + ex.Message);
+                    return View(vacationRequest);
+                }
             }
-
-            // без опция за половин ден при болничен отпуск
-            if (vacationRequest.RequestType == RequestType.Sick)
-            {
-                vacationRequest.HalfDay = false;
-            }
-
-            _context.Add(vacationRequest);
-            try
-            {
-                _context.Add(vacationRequest);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error saving to database: " + ex.Message);
-                ModelState.AddModelError("", "Failed to save: " + ex.Message);
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        
 
         ViewBag.RequestTypes = Enum.GetValues(typeof(RequestType))
             .Cast<RequestType>()
             .Select(r => new SelectListItem
             {
-                Text = r.ToString(),
+               Text = r.ToString(),
                 Value = ((int)r).ToString()
             });
 

@@ -27,12 +27,10 @@ namespace Vacation_Manager.Models
         public bool HalfDay { get; set; }
 
         public bool Approved { get; set; }
-
-        [Required]
-        public required string RequesterId { get; set; }
+        public string RequesterId { get; set; } = string.Empty;
 
         [ForeignKey("RequesterId")]
-        public virtual required User Requester { get; set; }
+        public virtual required User? Requester { get; set; }
 
         [Required]
         public RequestType RequestType { get; set; }
