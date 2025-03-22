@@ -12,8 +12,8 @@ using Vacation_Manager.Data;
 namespace Vacation_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250322094436_Init")]
-    partial class Init
+    [Migration("20250322154041_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace Vacation_Manager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fde1ec55-9696-4cd4-95b4-c71f9c20d5ee",
+                            Id = "b8c9a84b-29ae-47f3-bffb-501d83ef2446",
                             Name = "CEO",
                             NormalizedName = "CEO"
                         },
                         new
                         {
-                            Id = "a4e9f1fe-5f4d-4fd7-90ed-f0b82b7951fd",
+                            Id = "fe8a2803-bb31-4ff6-b67a-a12acf5b8e17",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "1e9f29c9-f4e9-4c28-810d-8815674aaa81",
+                            Id = "ce77580a-4cfc-4dda-a44d-cd587ecfd8a9",
                             Name = "Team Lead",
                             NormalizedName = "TEAM LEAD"
                         },
                         new
                         {
-                            Id = "6854758c-c70d-404f-ae5d-bd656f29b555",
+                            Id = "c017faf1-1eb6-4975-a794-0274bc7e3046",
                             Name = "Unassigned",
                             NormalizedName = "UNASSIGNED"
                         });

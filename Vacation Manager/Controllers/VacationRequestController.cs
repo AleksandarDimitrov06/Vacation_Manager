@@ -84,66 +84,79 @@ public class VacationRequestController : Controller
             Console.WriteLine("Error: " + error.ErrorMessage);
         }
 
-            var currentUser = await _userManager.GetUserAsync(User);
+        var currentUser = await _userManager.GetUserAsync(User);
 
-            if (currentUser == null)
-            {
-                return Unauthorized();
-            }
+        if (currentUser == null)
+        {
+            return Unauthorized();
+        }
 
-            
-            ModelState.ClearValidationState("RequesterId");
-            ModelState.ClearValidationState("Requester");
-            vacationRequest.RequesterId = currentUser.Id;
+        // Проверка дали началната дата не е след крайната
+        if (vacationRequest.StartDate > vacationRequest.EndDate)
+        {
+            ModelState.AddModelError("StartDate", "Началната дата не може да бъде след крайната дата.");
+            ViewBag.RequestTypes = Enum.GetValues(typeof(RequestType))
+                .Cast<RequestType>()
+                .Select(r => new SelectListItem
+                {
+                    Text = r.ToString(),
+                    Value = ((int)r).ToString()
+                });
+            return View(vacationRequest);
+        }
+        
+        ModelState.ClearValidationState("RequesterId");
+        ModelState.ClearValidationState("Requester");
+        vacationRequest.RequesterId = currentUser.Id;
 
         if (vacationRequest.RequestType != RequestType.Sick)
+        {
+            ModelState.Remove("sickNote");
+        }
+
+        if (TryValidateModel(vacationRequest))
+        {
+            vacationRequest.CreationDate = DateTime.Now;
+            vacationRequest.Approved = false;
+            // За болничен отпуск
+            if (vacationRequest.RequestType == RequestType.Sick && sickNote != null)
             {
-                ModelState.Remove("sickNote");
+                string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "sickNotes");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string uniqueFileName = $"{Guid.NewGuid()}_{sickNote.FileName}";
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await sickNote.CopyToAsync(fileStream);
+                }
+
+                vacationRequest.AttachmentFilePath = uniqueFileName;
             }
 
-            if (TryValidateModel(vacationRequest))
+            // без опция за половин ден при болничен отпуск
+            if (vacationRequest.RequestType == RequestType.Sick)
             {
-                vacationRequest.CreationDate = DateTime.Now;
-                vacationRequest.Approved = false;
-                // За болничен отпуск
-                if (vacationRequest.RequestType == RequestType.Sick && sickNote != null)
-                {
-                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "sickNotes");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    string uniqueFileName = $"{Guid.NewGuid()}_{sickNote.FileName}";
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await sickNote.CopyToAsync(fileStream);
-                    }
-
-                    vacationRequest.AttachmentFilePath = uniqueFileName;
-                }
-
-                // без опция за половин ден при болничен отпуск
-                if (vacationRequest.RequestType == RequestType.Sick)
-                {
-                    vacationRequest.HalfDay = false;
-                }
-
-                try
-                {
-                    _context.Add(vacationRequest);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error saving to database: " + ex.Message);
-                    ModelState.AddModelError("", "Failed to save: " + ex.Message);
-                    return View(vacationRequest);
-                }
+                vacationRequest.HalfDay = false;
             }
+
+            try
+            {
+                _context.Add(vacationRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving to database: " + ex.Message);
+                ModelState.AddModelError("", "Failed to save: " + ex.Message);
+                return View(vacationRequest);
+            }
+        }
         
 
         ViewBag.RequestTypes = Enum.GetValues(typeof(RequestType))
@@ -216,6 +229,20 @@ public class VacationRequestController : Controller
         {
             TempData["ErrorMessage"] = "Approved requests cannot be edited.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // Проверка дали началната дата не е след крайната
+        if (vacationRequest.StartDate > vacationRequest.EndDate)
+        {
+            ModelState.AddModelError("StartDate", "Началната дата не може да бъде след крайната дата.");
+            ViewBag.RequestTypes = Enum.GetValues(typeof(RequestType))
+                .Cast<RequestType>()
+                .Select(r => new SelectListItem
+                {
+                    Text = r.ToString(),
+                    Value = ((int)r).ToString()
+                });
+            return View(vacationRequest);
         }
 
         if (ModelState.IsValid)

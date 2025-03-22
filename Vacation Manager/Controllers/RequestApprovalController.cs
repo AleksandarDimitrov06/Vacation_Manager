@@ -38,16 +38,26 @@ public class RequestApprovalController : Controller
         else
         {
             // Team Lead може да види заявки само от съответния екип
-            if (currentUser.LedTeamId == null)
+            // Първо проверяваме дали потребителят е Team Lead на някой екип
+            var leadTeam = await _context.Teams
+                .FirstOrDefaultAsync(t => t.TeamLeaderId == currentUser.Id);
+
+            if (leadTeam == null)
             {
+                // Ако потребителят не е Team Lead на никой екип, връщаме празен списък
+                TempData["ErrorMessage"] = "Не сте назначен като лидер на екип.";
                 return View(new List<VacationRequest>());
             }
 
+            // Вземаме членовете на екипа
             requests = _context.VacationRequests
                 .Include(v => v.Requester)
                 .Include(v => v.Approver)
-                .Where(v => v.Requester.TeamId == currentUser.LedTeamId);
+                .Where(v => v.Requester.TeamId == leadTeam.TeamId);
         }
+
+        // Филтрираме собствените заявки на потребителя - не може да одобрява собствените си заявки
+        requests = requests.Where(v => v.RequesterId != currentUser.Id);
 
         // филтриране по дата
         if (fromDate.HasValue)
@@ -66,6 +76,8 @@ public class RequestApprovalController : Controller
                 break;
         }
 
+        ViewBag.FromDate = fromDate;
+        ViewBag.Status = status;
         return View(await requests.ToListAsync());
     }
 
@@ -79,11 +91,19 @@ public class RequestApprovalController : Controller
 
         var request = await _context.VacationRequests
             .Include(v => v.Requester)
+            .ThenInclude(r => r.Team)
             .FirstOrDefaultAsync(v => v.RequestId == id);
 
         if (request == null)
         {
             return NotFound();
+        }
+
+        // Проверка дали потребителят не се опитва да одобри собствената си заявка
+        if (request.RequesterId == currentUser.Id)
+        {
+            TempData["ErrorMessage"] = "Не можете да одобрите собствената си заявка за отпуск!";
+            return RedirectToAction(nameof(Index));
         }
 
         bool canApprove = false;
@@ -92,14 +112,22 @@ public class RequestApprovalController : Controller
         {
             canApprove = true; // CEO може да одобри всяка заявка
         }
-        else if (request.Requester.TeamId == currentUser.LedTeamId)
+        else
         {
-            canApprove = true; // Team Lead може да одобри заявка на член от екипа
+            // Проверяваме дали потребителят е Team Lead на екипа на заявителя
+            var leadTeam = await _context.Teams
+                .FirstOrDefaultAsync(t => t.TeamLeaderId == currentUser.Id);
+            
+            if (leadTeam != null && request.Requester.TeamId == leadTeam.TeamId)
+            {
+                canApprove = true; // Team Lead може да одобри заявка на член от екипа
+            }
         }
 
         if (!canApprove)
         {
-            return Forbid();
+            TempData["ErrorMessage"] = "Нямате право да одобрите тази заявка.";
+            return RedirectToAction(nameof(Index));
         }
 
         // Одобри заявката
@@ -107,6 +135,7 @@ public class RequestApprovalController : Controller
         request.ApproverId = currentUser.Id;
 
         await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Заявката беше одобрена успешно.";
 
         return RedirectToAction(nameof(Index));
     }

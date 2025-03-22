@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vacation_Manager.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -220,10 +220,10 @@ namespace Vacation_Manager.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1e9f29c9-f4e9-4c28-810d-8815674aaa81", null, "Team Lead", "TEAM LEAD" },
-                    { "6854758c-c70d-404f-ae5d-bd656f29b555", null, "Unassigned", "UNASSIGNED" },
-                    { "a4e9f1fe-5f4d-4fd7-90ed-f0b82b7951fd", null, "Developer", "DEVELOPER" },
-                    { "fde1ec55-9696-4cd4-95b4-c71f9c20d5ee", null, "CEO", "CEO" }
+                    { "b8c9a84b-29ae-47f3-bffb-501d83ef2446", null, "CEO", "CEO" },
+                    { "c017faf1-1eb6-4975-a794-0274bc7e3046", null, "Unassigned", "UNASSIGNED" },
+                    { "ce77580a-4cfc-4dda-a44d-cd587ecfd8a9", null, "Team Lead", "TEAM LEAD" },
+                    { "fe8a2803-bb31-4ff6-b67a-a12acf5b8e17", null, "Developer", "DEVELOPER" }
                 });
 
             migrationBuilder.CreateIndex(
