@@ -20,8 +20,14 @@ public class RequestApprovalController : Controller
     }
 
     // GET: RequestApproval
-    public async Task<IActionResult> Index(DateTime? fromDate, string status = "Pending")
+    public async Task<IActionResult> Index(DateTime? fromDate, string status = "All")
     {
+        // Проверка дали параметърът status е бил явно подаден в URL-а или е взел стойността по подразбиране
+        if (Request.Query["status"].Count == 0)
+        {
+            return RedirectToAction(nameof(Index), new { status = "All", fromDate });
+        }
+        
         var currentUser = await _userManager.GetUserAsync(User);
         var isCEO = User.IsInRole("CEO");
 

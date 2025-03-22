@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Заявки";
-    string currentStatus = Context.Request.Query["status"].ToString() ?? "Pending";
+    string currentStatus = Context.Request.Query["status"].ToString() ?? "All";
 }
 
 <h1>@ViewData["Title"]</h1>
