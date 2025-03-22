@@ -1,0 +1,90 @@
+﻿@model IEnumerable<VacationRequest>
+
+@{
+    ViewData["Title"] = "Vacation Requests for Approval";
+    string currentStatus = Context.Request.Query["status"].ToString() ?? "Pending";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="btn-group">
+            <a asp-action="Index" asp-route-status="All" class="btn @(currentStatus == "All" ? "btn-primary" : "btn-outline-primary")">All</a>
+            <a asp-action="Index" asp-route-status="Pending" class="btn @(currentStatus == "Pending" ? "btn-primary" : "btn-outline-primary")">Pending</a>
+            <a asp-action="Index" asp-route-status="Approved" class="btn @(currentStatus == "Approved" ? "btn-primary" : "btn-outline-primary")">Approved</a>
+        </div>
+    </div>
+    <div class="col-md-4 offset-md-4">
+        <form asp-action="Index" method="get" class="form-inline">
+            <input type="hidden" name="status" value="@currentStatus" />
+            <div class="input-group">
+                <input type="date" name="fromDate" class="form-control" />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Filter by Date</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Type</th>
+            <th>Created</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Half Day</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Requester.FirstName @item.Requester.LastName</td>
+                <td>@item.RequestType</td>
+                <td>@item.CreationDate.ToShortDateString()</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@(item.HalfDay ? "Yes" : "No")</td>
+                <td>
+                    @if (item.Approved)
+                    {
+                        <span class="badge bg-success">Approved by @item.Approver?.FirstName @item.Approver?.LastName</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        @if (!item.Approved)
+                        {
+                            <form asp-action="Approve" method="post" style="display: inline;">
+                                <input type="hidden" name="id" value="@item.RequestId" />
+                                <button type="submit" class="btn btn-sm btn-success"
+                                        onclick="return confirm('Are you sure you want to approve this request?')">
+                                    Approve
+                                </button>
+                            </form>
+                        }
+
+                        <a asp-controller="VacationRequest" asp-action="Details" asp-route-id="@item.RequestId" class="btn btn-sm btn-info">Details</a>
+
+                        @if (item.RequestType == RequestType.Sick && !string.IsNullOrEmpty(item.AttachmentFilePath))
+                        {
+                            <a asp-controller="VacationRequest" asp-action="DownloadSickNote" asp-route-id="@item.RequestId" class="btn btn-sm btn-secondary">Download Note</a>
+                        }
+
+                        <a asp-controller="VacationRequest" asp-action="Delete" asp-route-id="@item.RequestId" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

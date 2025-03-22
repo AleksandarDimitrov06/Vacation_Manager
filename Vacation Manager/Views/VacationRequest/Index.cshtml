@@ -1,0 +1,82 @@
+﻿@model IEnumerable<VacationRequest>
+
+@{
+    ViewData["Title"] = "My Vacation Requests";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a asp-action="Create" class="btn btn-primary">Създай нова заявка</a>
+    </div>
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="form-inline">
+            <div class="input-group">
+                <input type="date" name="fromDate" class="form-control" />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Филтър</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Тип</th>
+            <th>Заявено</th>
+            <th>Начало</th>
+            <th>Край</th>
+            <th>Половин ден</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RequestType</td>
+                <td>@item.CreationDate.ToShortDateString()</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@(item.HalfDay ? "Yes" : "No")</td>
+                <td>
+                    @if (item.Approved)
+                    {
+                        <span class="badge bg-success">Одобрено от @item.Approver?.FirstName @item.Approver?.LastName</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Изчакване</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a asp-action="Details" asp-route-id="@item.RequestId" class="btn btn-sm btn-info">Детайли</a>
+
+                        @if (!item.Approved)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.RequestId" class="btn btn-sm btn-primary">Редактирай</a>
+                            <a asp-action="Delete" asp-route-id="@item.RequestId" class="btn btn-sm btn-danger">Изтрий</a>
+                        }
+
+                        @if (item.RequestType == RequestType.Sick && !string.IsNullOrEmpty(item.AttachmentFilePath))
+                        {
+                            <a asp-action="DownloadSickNote" asp-route-id="@item.RequestId" class="btn btn-sm btn-secondary">Изтегли документ</a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

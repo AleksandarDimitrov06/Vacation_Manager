@@ -78,6 +78,11 @@ public class VacationRequestController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(VacationRequest vacationRequest, IFormFile sickNote)
     {
+        Console.WriteLine("Model state valid: " + ModelState.IsValid);
+        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            Console.WriteLine("Error: " + error.ErrorMessage);
+        }
         if (ModelState.IsValid)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -112,7 +117,17 @@ public class VacationRequestController : Controller
             }
 
             _context.Add(vacationRequest);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Add(vacationRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving to database: " + ex.Message);
+                ModelState.AddModelError("", "Failed to save: " + ex.Message);
+            }
             return RedirectToAction(nameof(Index));
         }
 

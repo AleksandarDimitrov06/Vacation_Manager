@@ -12,8 +12,8 @@ using Vacation_Manager.Data;
 namespace Vacation_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250316121522_Initial")]
-    partial class Initial
+    [Migration("20250322080301_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,25 +54,25 @@ namespace Vacation_Manager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1de8bf05-ef14-48cc-86fa-23574e8cac02",
+                            Id = "3682947e-8faa-43ee-a471-0221991d5e25",
                             Name = "CEO",
                             NormalizedName = "CEO"
                         },
                         new
                         {
-                            Id = "4ff24582-e0ff-4b50-883e-e7a104b98ff8",
+                            Id = "59ec85a0-29c6-424a-a66c-932dc8b3d505",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "ae134a1d-51c4-402d-bb5c-271ba55d0c45",
+                            Id = "ac752969-22f5-438c-92d5-67fa02687b78",
                             Name = "Team Lead",
                             NormalizedName = "TEAM LEAD"
                         },
                         new
                         {
-                            Id = "2d86ac89-3379-4457-81c8-ce7ef8837f57",
+                            Id = "c9668154-c9a9-4936-8074-4f45592ea0a6",
                             Name = "Unassigned",
                             NormalizedName = "UNASSIGNED"
                         });
@@ -337,6 +337,9 @@ namespace Vacation_Manager.Migrations
 
                     b.Property<string>("ApproverId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AttachmentFilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
