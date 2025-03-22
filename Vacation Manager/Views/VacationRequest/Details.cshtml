@@ -1,0 +1,62 @@
+﻿@model VacationRequest
+
+@{
+    ViewData["Title"] = "Детайли на заявката";
+}
+
+<h1>Детайли</h1>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Тип</dt>
+        <dd class="col-sm-9">@Model.RequestType</dd>
+
+        <dt class="col-sm-3">Начало</dt>
+        <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Край</dt>
+        <dd class="col-sm-9">@Model.EndDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Създадена на</dt>
+        <dd class="col-sm-9">@Model.CreationDate.ToString("g")</dd>
+
+        <dt class="col-sm-3">Половин ден</dt>
+        <dd class="col-sm-9">@(Model.HalfDay ? "Да" : "Не")</dd>
+
+        <dt class="col-sm-3">Статус</dt>
+        <dd class="col-sm-9">
+            @if (Model.Approved)
+            {
+                <span class="badge bg-success">Одобрена</span>
+            }
+            else
+            {
+                <span class="badge bg-warning">В изчакване</span>
+            }
+        </dd>
+
+        @if (Model.Approved && Model.Approver != null)
+        {
+            <dt class="col-sm-3">Одобрена от</dt>
+            <dd class="col-sm-9">@Model.Approver.FirstName @Model.Approver.LastName</dd>
+        }
+
+        @if (Model.RequestType == RequestType.Sick && !string.IsNullOrEmpty(Model.AttachmentFilePath))
+        {
+            <dt class="col-sm-3">Болничен документ</dt>
+            <dd class="col-sm-9">
+                <a asp-action="DownloadSickNote" asp-route-id="@Model.RequestId" class="btn btn-sm btn-primary">
+                    Свали документ
+                </a>
+            </dd>
+        }
+    </dl>
+</div>
+
+<div>
+    @if (!Model.Approved)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.RequestId" class="btn btn-primary">Редактирай</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Върни се</a>
+</div>

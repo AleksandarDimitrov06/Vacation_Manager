@@ -1,0 +1,48 @@
+﻿@model VacationRequest
+
+@{
+    ViewData["Title"] = "Delete Request";
+}
+
+<h1>Изтрий заявка</h1>
+
+<div class="alert alert-danger">
+    <h3>Сигурни ли сте, че искате да изтриете заявката?</h3>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Тип</dt>
+        <dd class="col-sm-9">@Model.RequestType</dd>
+
+        <dt class="col-sm-3">Начало</dt>
+        <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Край</dt>
+        <dd class="col-sm-9">@Model.EndDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-3">Създадена на</dt>
+        <dd class="col-sm-9">@Model.CreationDate.ToString("g")</dd>
+
+        <dt class="col-sm-3">Половин ден</dt>
+        <dd class="col-sm-9">@(Model.HalfDay ? "Да" : "Не")</dd>
+
+        <dt class="col-sm-3">Статус</dt>
+        <dd class="col-sm-9">
+            @if (Model.Approved)
+            {
+                <span class="badge bg-success">Одобрена</span>
+            }
+            else
+            {
+                <span class="badge bg-warning">В изчакване</span>
+            }
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="RequestId" />
+        <button type="submit" class="btn btn-danger">Изтрий</button>
+        <a asp-action="Index" class="btn btn-secondary">Назад</a>
+    </form>
+</div>

@@ -55,7 +55,7 @@ async Task CreateAdmin(WebApplication app)
 
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            var admin = new User { FirstName = "FirstName", LastName = "LastName", UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            var admin = new User { FirstName = "Adminche", LastName = "Adminski", UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             var result = await userManager.CreateAsync(admin, adminPassword);
             if (result.Succeeded)
             {
@@ -82,9 +82,18 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "requestApprovalIndex",
+    pattern: "RequestApproval/Index",
+    defaults: new { controller = "RequestApproval", action = "Index" });
+
+app.MapControllerRoute(
+    name: "approveRequest",
+    pattern: "RequestApproval/Approve/{id?}",
+    defaults: new { controller = "RequestApproval", action = "Approve" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.MapRazorPages();
 
 await CreateAdmin(app);
