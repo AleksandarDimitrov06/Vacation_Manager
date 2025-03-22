@@ -41,5 +41,6 @@ namespace Vacation_Manager.Models
 
         [ForeignKey("ApproverId")]
         public virtual User? Approver { get; set; }
+        public string? AttachmentFilePath { get; set; }
     }
 }

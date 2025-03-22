@@ -1,0 +1,80 @@
+﻿@model VacationRequest
+
+@{
+    ViewData["Title"] = Model?.RequestId > 0 ? "Edit Vacation Request" : "New Vacation Request";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="@(Model?.RequestId > 0 ? "Edit" : "Create")" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (Model?.RequestId > 0)
+    {
+        <input type="hidden" asp-for="RequestId" />
+    }
+
+    <div class="form-group">
+        <label asp-for="RequestType" class="control-label">Тип отпуск</label>
+        <select asp-for="RequestType" asp-items="ViewBag.RequestTypes" class="form-control" id="requestTypeSelect">
+        </select>
+        <span asp-validation-for="RequestType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StartDate" class="control-label">Начало</label>
+        <input asp-for="StartDate" class="form-control" type="date" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EndDate" class="control-label">Край</label>
+        <input asp-for="EndDate" class="form-control" type="date" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group" id="halfDayGroup">
+        <div class="form-check">
+            <input asp-for="HalfDay" class="form-check-input" type="checkbox" />
+            <label asp-for="HalfDay" class="form-check-label">Половин ден</label>
+        </div>
+    </div>
+
+    <div class="form-group" id="sickNoteGroup" style="display: none;">
+        <label class="control-label">Прикачване на файл</label>
+        <input name="sickNote" type="file" class="form-control" />
+        @if (!string.IsNullOrEmpty(Model?.AttachmentFilePath))
+        {
+            <div class="mt-2">
+                <span>Текущ документ: </span>
+                <a asp-action="DownloadSickNote" asp-route-id="@Model?.RequestId">Изтегли</a>
+            </div>
+        }
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Запази</button>
+        <a asp-action="Index" class="btn btn-secondary">Откажи</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function updateFormBasedOnRequestType() {
+                var requestType = $("#requestTypeSelect").val();
+
+                if (requestType === '@((int)RequestType.Sick)') {
+                    $("#halfDayGroup").hide();
+                    $("#sickNoteGroup").show();
+                } else {
+                    $("#halfDayGroup").show();
+                    $("#sickNoteGroup").hide();
+                }
+            }
+
+            $("#requestTypeSelect").change(updateFormBasedOnRequestType);
+            updateFormBasedOnRequestType();
+        });
+    </script>
+}
