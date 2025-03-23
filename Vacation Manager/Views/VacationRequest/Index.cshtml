@@ -4,79 +4,111 @@
     ViewData["Title"] = "Моите заявки";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <a asp-action="Create" class="btn btn-primary">Създай нова заявка</a>
-    </div>
-    <div class="col-md-6">
-        <form asp-action="Index" method="get" class="form-inline">
-            <div class="input-group">
-                <input type="date" name="fromDate" class="form-control" />
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-outline-secondary">Филтър</button>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Списък с моите заявки</h5>
+            <a asp-action="Create" class="btn btn-primary">Създай нова заявка</a>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <form asp-action="Index" method="get" class="form-inline">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate" placeholder="От дата..." />
+                                    <button type="submit" class="btn btn-primary">Филтриране</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </form>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Тип</th>
+                            <th>Заявено</th>
+                            <th>Начало</th>
+                            <th>Край</th>
+                            <th>Половин ден</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.RequestType</td>
+                                <td>@item.CreationDate.ToShortDateString()</td>
+                                <td>@item.StartDate.ToShortDateString()</td>
+                                <td>@item.EndDate.ToShortDateString()</td>
+                                <td>@(item.HalfDay ? "Да" : "Не")</td>
+                                <td>
+                                    @if (item.Approved)
+                                    {
+                                        <span class="badge bg-success">Одобрено от @item.Approver?.FirstName @item.Approver?.LastName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Изчакване</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.RequestId" class="btn btn-info btn-sm" title="Детайли">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+
+                                        @if (!item.Approved)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.RequestId" class="btn btn-warning btn-sm" title="Редактиране">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.RequestId" class="btn btn-danger btn-sm" title="Изтриване">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        }
+
+                                        @if (item.RequestType == RequestType.Sick && !string.IsNullOrEmpty(item.AttachmentFilePath))
+                                        {
+                                            <a asp-action="DownloadSickNote" asp-route-id="@item.RequestId" class="btn btn-secondary btn-sm" title="Изтегли документ">
+                                                <i class="bi bi-file-earmark-arrow-down"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
+@section Scripts {
+    <script>
+        // Допълнителен JavaScript, ако е необходимо
+    </script>
 }
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Тип</th>
-            <th>Заявено</th>
-            <th>Начало</th>
-            <th>Край</th>
-            <th>Половин ден</th>
-            <th>Статус</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.RequestType</td>
-                <td>@item.CreationDate.ToShortDateString()</td>
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.EndDate.ToShortDateString()</td>
-                <td>@(item.HalfDay ? "Да" : "Не")</td>
-                <td>
-                    @if (item.Approved)
-                    {
-                        <span class="badge bg-success">Одобрено от @item.Approver?.FirstName @item.Approver?.LastName</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-warning">Изчакване</span>
-                    }
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a asp-action="Details" asp-route-id="@item.RequestId" class="btn btn-sm btn-info">Детайли</a>
-
-                        @if (!item.Approved)
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.RequestId" class="btn btn-sm btn-primary">Редактирай</a>
-                            <a asp-action="Delete" asp-route-id="@item.RequestId" class="btn btn-sm btn-danger">Изтрий</a>
-                        }
-
-                        @if (item.RequestType == RequestType.Sick && !string.IsNullOrEmpty(item.AttachmentFilePath))
-                        {
-                            <a asp-action="DownloadSickNote" asp-route-id="@item.RequestId" class="btn btn-sm btn-secondary">Изтегли документ</a>
-                        }
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
